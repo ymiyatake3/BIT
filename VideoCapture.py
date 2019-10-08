@@ -51,22 +51,24 @@ while(True):
                 centerpoint = True
                 
         #cv2.imshow('img_contour', img_contour)
-        cv2.imshow('gscale', gscale)
+        #cv2.imshow('gscale', gscale)
 
-    # Draw white circle
+    # Draw white circles
     for row in range(len(center)):
         cv2.circle(img_record, (center[row][0], center[row][1]), 15, (255, 255, 255), -1)
-    
+        
     cv2.imshow('img_record', img_record)
     
-    # If the blight part disappear
+    # If the bright part disappear
     if not centerpoint:
-        #
-        cv2.imwrite("num.jpg", img_record)
+        # Write down the entire image of stroke
+        resized = cv2.resize(img_record, (28, 28), interpolation=cv2.INTER_AREA)
+        cv2.imwrite('num.jpg', resized)
         
         # Clear the record
         center.clear()
         #ret, img_record = cv2.threshold(gscale, 255, 255, cv2.THRESH_BINARY)
+    
 
     # 若按下 q 鍵則離開迴圈
     if cv2.waitKey(1) & 0xFF == ord('q'):
