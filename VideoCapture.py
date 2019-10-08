@@ -61,9 +61,12 @@ while(True):
     
     # If the bright part disappear
     if not centerpoint:
-        # Write down the entire image of stroke
+        # Resize to 28*28 and widen it
         resized = cv2.resize(img_record, (28, 28), interpolation=cv2.INTER_AREA)
+        resized = cv2.dilate(resized, (3, 3))
         cv2.imwrite('num.jpg', resized)
+        
+        
         
         # Clear the record
         center.clear()
