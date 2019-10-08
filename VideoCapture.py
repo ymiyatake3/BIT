@@ -1,5 +1,14 @@
 import cv2
 import imutils
+import numpy as np
+
+from sklearn.externals import joblib
+from sklearn import datasets
+from skimage.feature import hog
+from sklearn.svm import LinearSVC
+
+# Load the classifier
+#clf = joblib.load("digits_cls.pkl")
 
 # 選擇攝影機
 cap = cv2.VideoCapture(0)
@@ -57,21 +66,32 @@ while(True):
     for row in range(len(center)):
         cv2.circle(img_record, (center[row][0], center[row][1]), 15, (255, 255, 255), -1)
         
-    cv2.imshow('img_record', img_record)
+    #cv2.imshow('img_record', img_record)
     
     # If the bright part disappear
     if not centerpoint:
+        cv2.imwrite('num.jpg', img_record)
         # Resize to 28*28 and widen it
         resized = cv2.resize(img_record, (28, 28), interpolation=cv2.INTER_AREA)
         resized = cv2.dilate(resized, (3, 3))
-        cv2.imwrite('num.jpg', resized)
-        
-        
         
         # Clear the record
         center.clear()
+        
+        '''
+        # Calcualte the HOG features
+        hogf = hog(resized, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
+        
+        # Predict the number
+        number = clf.predict(np.array([hogf], 'float64'))
+        
+        # Show up the predicted num as a text
+        cv2.putText(img_record, str(int(number[0])), (100, 100), cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 255), 3)
+        
         #ret, img_record = cv2.threshold(gscale, 255, 255, cv2.THRESH_BINARY)
+        '''
     
+    cv2.imshow('img_record', img_record)
 
     # 若按下 q 鍵則離開迴圈
     if cv2.waitKey(1) & 0xFF == ord('q'):
