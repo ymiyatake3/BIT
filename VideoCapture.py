@@ -14,7 +14,7 @@ while(True):
     
     # Grayscale Image
     gscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    cv2.imshow('gscale', gscale)
+    #cv2.imshow('gscale', gscale)
     
     # Binary Image
     ret, thresh = cv2.threshold(gscale, 250, 255, cv2.THRESH_BINARY)
@@ -25,7 +25,7 @@ while(True):
     #cv2.drawContours(img_contour, contours, -1, (0,255,0), 3)
     #cv2.imshow('img_contour', img_contour)
     
-    #img_contour = cv2.cvtColor(cnts[0], cv2.COLOR_GRAY2BGR) #必要？
+    #img_contour = cv2.cvtColor(cnts[0], cv2.COLOR_GRAY2BGR)
     cnts = imutils.grab_contours(cnts)
 
     ret, img_record = cv2.threshold(gscale, 255, 255, cv2.THRESH_BINARY)
@@ -39,20 +39,21 @@ while(True):
                 cY = int(M["m01"] / M["m00"])
                 #cv2.drawContours(img_contour, [c], -1, (255, 0, 0), 3)
                 
-                # Draw white circle on the center point
+                # Draw a dot on the center point
                 cv2.circle(gscale, (cX, cY), 3, (0, 0, 255), -1)
                 
                 center.append([cX, cY])
                 centerpoint = True
                 
         #cv2.imshow('img_contour', img_contour)
-
+        cv2.imshow('gscale', gscale)
     if not centerpoint:
         center.clear()
-        ret, img_record = cv2.threshold(gscale, 255, 255, cv2.THRESH_BINARY)
+        #ret, img_record = cv2.threshold(gscale, 255, 255, cv2.THRESH_BINARY)
 
     for row in range(len(center)):
         cv2.circle(img_record, (center[row][0], center[row][1]), 15, (255, 255, 255), -1)
+    
     cv2.imshow('img_record', img_record)
 
     # 若按下 q 鍵則離開迴圈
