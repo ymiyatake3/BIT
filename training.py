@@ -1,24 +1,36 @@
-# Import the modules
-from sklearn.externals import joblib
-from sklearn import datasets
-from skimage.feature import hog
+# Reference:
+# https://www.codingame.com/playgrounds/37409/handwritten-digit-recognition-using-scikit-learn
+
+
+from mnist import MNIST
 from sklearn.svm import LinearSVC
-import numpy as np
+from sklearn.metrics import accuracy_score
+from sklearn.externals import joblib
 
-dataset = datasets.fetch_mldata("MNIST Original")
-
-features = np.array(dataset.data, 'int16')
-labels = np.array(dataset.target, 'int')
-
-list_hog_fd = []
-for feature in features:
-    fd = hog(feature.reshape((28, 28)), orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
-    list_hog_fd.append(fd)
-hog_features = np.array(list_hog_fd, 'float64')
+print("Loading dataset...")
+mndata = MNIST("./data/")
+images, labels = mndata.load_training()
 
 clf = LinearSVC()
-    
-clf.fit(hog_features, labels)
+
+# Train on the first 10000 images:
+train_x = images[:10000]
+train_y = labels[:10000]
+
+print("Train model")
+clf.fit(train_x, train_y)
 
 joblib.dump(clf, "digits_cls.pkl", compress=3)
 
+print("Done!")
+
+'''
+# Test on the next 1000 images:
+test_x = images[10000:11000]
+expected = labels[10000:11000].tolist()
+
+print("Compute predictions")
+predicted = clf.predict(test_x)
+
+print("Accuracy: ", accuracy_score(expected, predicted))
+'''
